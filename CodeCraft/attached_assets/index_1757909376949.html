@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Real-Time Chat App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #312b3f;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    #chat-container {
+      display: flex;
+      flex-direction: column;
+      width: 400px;
+      background: #464050;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Left title bar */
+    #chat-header {
+      background: #312b3f;
+      padding: 12px;
+      font-family: 'Brush Script MT', cursive;
+      font-size: 28px;
+      text-align: center;
+      color: white;
+      border-bottom: 2px solid #29262d;
+    }
+
+    #messages {
+      flex: 1;
+      list-style-type: none;
+      padding: 10px;
+      margin: 0;
+      overflow-y: scroll;
+    }
+
+    #messages li {
+      padding: 6px 10px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      background: #40444b;
+    }
+
+    #chat-form {
+      display: flex;
+      padding: 10px;
+      background: #29262d;
+      border-top: 1px solid #202225;
+    }
+
+    #message-input {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button {
+      margin-left: 5px;
+      padding: 8px 12px;
+      border: none;
+      background: #5865f2;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #4752c4;
+    }
+
+    /* Virtual keyboard */
+    #keyboard {
+      display: none;
+      background: #29262d;
+      padding: 10px;
+      flex-wrap: wrap;
+      gap: 5px;
+      border-top: 2px solid #202225;
+    }
+
+    #keyboard button {
+      width: 32px;
+      height: 32px;
+      background: #40444b;
+      border-radius: 5px;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+
+    #keyboard button:hover {
+      background: #5865f2;
+    }
+  </style>
+</head>
+<body>
+  <div id="chat-container">
+    <div id="chat-header">Chat App</div>
+    <ul id="messages"></ul>
+    <form id="chat-form">
+      <input id="message-input" autocomplete="off" placeholder="Type a message..." required />
+      <button>Send</button>
+    </form>
+    <div id="keyboard"></div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let username = "";
+
+    // Ask for username once
+    while (!username) {
+      username = prompt("Enter your username:");
+    }
+
+    const form = document.getElementById('chat-form');
+    const messageInput = document.getElementById('message-input');
+    const messages = document.getElementById('messages');
+    const keyboard = document.getElementById('keyboard');
+
+    // Keyboard layout
+    const keys = "QWERTYUIOPASDFGHJKLZXCVBNM".split("");
+    keys.push("←", "Space");
+
+    keys.forEach(k => {
+      const btn = document.createElement("button");
+      btn.textContent = k;
+      btn.type = "button";
+      btn.addEventListener("click", () => {
+        if (k === "←") {
+          messageInput.value = messageInput.value.slice(0, -1);
+        } else if (k === "Space") {
+          messageInput.value += " ";
+        } else {
+          messageInput.value += k;
+        }
+        messageInput.focus();
+      });
+      keyboard.appendChild(btn);
+    });
+
+    // Show keyboard on input focus
+    messageInput.addEventListener("focus", () => {
+      keyboard.style.display = "flex";
+    });
+
+    // Hide keyboard if you click outside
+    document.addEventListener("click", (e) => {
+      if (!document.getElementById("chat-container").contains(e.target)) {
+        keyboard.style.display = "none";
+      }
+    });
+
+    // Send message
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const message = messageInput.value.trim();
+      if(message) {
+        const timestamp = new Date().toLocaleTimeString();
+        socket.emit('chat message', { username, message, timestamp });
+        messageInput.value = '';
+      }
+    });
+
+    // Receive message
+    socket.on('chat message', (data) => {
+      const li = document.createElement('li');
+      li.textContent = `[${data.timestamp}] ${data.username}: ${data.message}`;
+      messages.appendChild(li);
+      messages.scrollTop = messages.scrollHeight;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(228, 12%, 14%);
+  --foreground: hsl(220, 9%, 96%);
+  --card: hsl(228, 11%, 19%);
+  --card-foreground: hsl(220, 9%, 96%);
+  --popover: hsl(228, 11%, 19%);
+  --popover-foreground: hsl(220, 9%, 96%);
+  --primary: hsl(235, 85%, 65%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(228, 10%, 26%);
+  --secondary-foreground: hsl(220, 9%, 96%);
+  --muted: hsl(228, 10%, 26%);
+  --muted-foreground: hsl(220, 5%, 65%);
+  --accent: hsl(228, 10%, 26%);
+  --accent-foreground: hsl(220, 9%, 96%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --border: hsl(228, 10%, 26%);
+  --input: hsl(228, 10%, 26%);
+  --ring: hsl(235, 85%, 65%);
+  --radius: 0.5rem;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  
+  /* Discord-inspired colors */
+  --discord-dark: hsl(225, 6%, 23%);
+  --discord-darker: hsl(223, 7%, 20%);
+  --discord-darkest: hsl(220, 13%, 13%);
+  --discord-blurple: hsl(235, 85%, 65%);
+  --discord-green: hsl(153, 46%, 49%);
+  --discord-red: hsl(0, 84%, 60%);
+  --discord-gray: hsl(216, 8%, 47%);
+}
+
+.dark {
+  --background: hsl(228, 12%, 14%);
+  --foreground: hsl(220, 9%, 96%);
+  --card: hsl(228, 11%, 19%);
+  --card-foreground: hsl(220, 9%, 96%);
+  --popover: hsl(228, 11%, 19%);
+  --popover-foreground: hsl(220, 9%, 96%);
+  --primary: hsl(235, 85%, 65%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(228, 10%, 26%);
+  --secondary-foreground: hsl(220, 9%, 96%);
+  --muted: hsl(228, 10%, 26%);
+  --muted-foreground: hsl(220, 5%, 65%);
+  --accent: hsl(228, 10%, 26%);
+  --accent-foreground: hsl(220, 9%, 96%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --border: hsl(228, 10%, 26%);
+  --input: hsl(228, 10%, 26%);
+  --ring: hsl(235, 85%, 65%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: var(--font-sans);
+  }
+}
+
+@layer components {
+  .message-animation {
+    animation: messageSlideIn 0.3s ease-out;
+  }
+  
+  .typing-indicator {
+    animation: pulse 1.5s infinite;
+  }
+  
+  .user-avatar {
+    @apply w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm;
+    background: linear-gradient(135deg, var(--primary), hsl(235, 85%, 55%));
+  }
+  
+  .user-avatar-sm {
+    @apply w-8 h-8 text-xs;
+  }
+  
+  .status-indicator {
+    @apply w-3 h-3 rounded-full border-2 absolute -bottom-0.5 -right-0.5;
+    border-color: var(--card);
+  }
+  
+  .status-online { 
+    background-color: var(--discord-green); 
+  }
+  
+  .status-offline { 
+    background-color: var(--discord-gray); 
+  }
+  
+  .status-away { 
+    @apply bg-yellow-500;
+  }
+  
+  .virtual-keyboard {
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .virtual-keyboard.hidden {
+    @apply opacity-0 translate-y-full pointer-events-none;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    @apply w-2;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-muted rounded;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted;
+    opacity: 0.8;
+  }
+
+  .avatar-primary {
+    background: linear-gradient(135deg, var(--primary), hsl(235, 85%, 55%));
+  }
+  
+  .avatar-green {
+    background: linear-gradient(135deg, var(--discord-green), hsl(153, 46%, 39%));
+  }
+  
+  .avatar-red {
+    background: linear-gradient(135deg, var(--discord-red), hsl(0, 84%, 50%));
+  }
+  
+  .avatar-yellow {
+    background: linear-gradient(135deg, hsl(45, 93%, 58%), hsl(45, 93%, 48%));
+  }
+  
+  .avatar-purple {
+    background: linear-gradient(135deg, hsl(271, 76%, 53%), hsl(271, 76%, 43%));
+  }
+  
+  .avatar-pink {
+    background: linear-gradient(135deg, hsl(330, 81%, 60%), hsl(330, 81%, 50%));
+  }
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 0.4; 
+  }
+  50% { 
+    opacity: 1; 
+  }
+}
